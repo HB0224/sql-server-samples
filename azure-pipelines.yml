@@ -1,0 +1,28 @@
+# Build Pipeline for SQL Database
+
+# The *trigger* specifies what triggers this pipeline to run automatically. In this case: a *commit* against *master*
+trigger:
+- master
+
+# The *pool* specifies which VM image to use for executing this pipeline.
+pool:
+  name: Azure Pipelines
+  vmImage: windows-2019
+
+# Here come the actual "build steps". In this case, we have a "simple" build pipeline - we will explore pipelines with multiple "stages" later.
+steps:
+- task: VSBuild@1
+  inputs:
+    solution: 'samples/databases/wide-world-importers/wwi-dw-ssdt/WideWorldImportersDW.sln'
+    configuration: '$(BuildConfiguration)'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**/bin/$(BuildConfiguration)/**/*.dacpac'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'SQLDW'
+    publishLocation: 'pipeline'
