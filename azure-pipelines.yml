@@ -14,11 +14,11 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: 'samples/databases/wide-world-importers/wwi-dw-ssdt/WideWorldImportersDW.sln'
-    configuration: '$(BuildConfiguration)'
+    configuration: 'Release'
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**/bin/$(BuildConfiguration)/**/*.dacpac'
+    Contents: '**/bin/Release/**/*.dacpac'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 - task: PublishPipelineArtifact@1
